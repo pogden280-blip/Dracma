@@ -156,6 +156,7 @@
             const [isSaving, setIsSaving] = useState(false);
             const [isDeclareSaleOpen, setIsDeclareSaleOpen] = useState(false);
             const [isManualId, setIsManualId] = useState(false);
+            const [adminSearch, setAdminSearch] = useState('');
             const [saleData, setSaleData] = useState({ productId: '', quantity: 1 });
             const [formData, setFormData] = useState({
                 id: '', name: '', category: 'Correntes', price: '', description: '', images: [], video: '', material: '', stone: '', stock: ''
@@ -347,6 +348,18 @@
                                 {isDeclareSaleOpen ? (
                                     <div className="space-y-6">
                                         <h3 className="text-sm uppercase tracking-widest text-gold">Declarar Venda</h3>
+                                        
+                                        <div className="relative">
+                                            <Icon name="search" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20" />
+                                            <input 
+                                                type="text" 
+                                                placeholder="Pesquisar por nome ou código..."
+                                                value={adminSearch}
+                                                onChange={(e) => setAdminSearch(e.target.value)}
+                                                className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-xs outline-none focus:border-gold/50"
+                                            />
+                                        </div>
+
                                         <form onSubmit={handleDeclareSale} className="space-y-4">
                                             <div className="space-y-2">
                                                 <label className="text-xs text-white/40 uppercase tracking-widest">Selecionar Peça</label>
@@ -357,11 +370,17 @@
                                                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-gold"
                                                 >
                                                     <option value="" className="bg-zinc-900">Selecione uma peça...</option>
-                                                    {products.map(p => (
-                                                        <option key={p.id} value={p.id} className="bg-zinc-900">
-                                                            {p.name} (ID: {p.id.slice(-4)}) - Est: {p.stock}
-                                                        </option>
-                                                    ))}
+                                                    {products
+                                                        .filter(p => 
+                                                            p.name.toLowerCase().includes(adminSearch.toLowerCase()) || 
+                                                            p.id.toLowerCase().includes(adminSearch.toLowerCase())
+                                                        )
+                                                        .map(p => (
+                                                            <option key={p.id} value={p.id} className="bg-zinc-900">
+                                                                {p.name} (ID: {p.id.slice(-8)}) - Est: {p.stock}
+                                                            </option>
+                                                        ))
+                                                    }
                                                 </select>
                                             </div>
                                             <div className="space-y-2">
@@ -392,29 +411,49 @@
                                     </div>
                                 ) : (
                                     <div className="space-y-6">
-                                        <div className="flex gap-2">
-                                            <button 
-                                                onClick={() => {
-                                                    setEditingItem(null);
-                                                    setIsManualId(false);
-                                                    setFormData({ id: '', name: '', category: 'Correntes', price: '', description: '', images: [], video: '', material: '', stone: '', stock: '' });
-                                                }}
-                                                className={`flex-1 py-2 text-xs uppercase tracking-widest rounded-xl border transition-all ${!editingItem ? 'bg-gold text-black border-gold font-bold' : 'border-white/10 text-white/40'}`}
-                                            >
-                                                Nova Peça
-                                            </button>
-                                            <div className="relative flex-1">
-                                                <select 
-                                                    onChange={(e) => {
-                                                        const item = products.find(p => p.id === e.target.value);
-                                                        if (item) startEdit(item);
+                                        <div className="flex flex-col gap-3">
+                                            <div className="flex gap-2">
+                                                <button 
+                                                    onClick={() => {
+                                                        setEditingItem(null);
+                                                        setIsManualId(false);
+                                                        setAdminSearch('');
+                                                        setFormData({ id: '', name: '', category: 'Correntes', price: '', description: '', images: [], video: '', material: '', stone: '', stock: '' });
                                                     }}
-                                                    className={`w-full py-2 px-4 text-xs uppercase tracking-widest rounded-xl border bg-transparent outline-none transition-all ${editingItem ? 'bg-gold text-black border-gold font-bold' : 'border-white/10 text-white/40'}`}
-                                                    value={editingItem ? editingItem.id : ''}
+                                                    className={`flex-1 py-2 text-xs uppercase tracking-widest rounded-xl border transition-all ${!editingItem ? 'bg-gold text-black border-gold font-bold' : 'border-white/10 text-white/40'}`}
                                                 >
-                                                    <option value="" className="bg-zinc-900">Usar Existente...</option>
-                                                    {products.map(p => <option key={p.id} value={p.id} className="bg-zinc-900">{p.name}</option>)}
-                                                </select>
+                                                    Nova Peça
+                                                </button>
+                                                <div className="relative flex-1">
+                                                    <select 
+                                                        onChange={(e) => {
+                                                            const item = products.find(p => p.id === e.target.value);
+                                                            if (item) startEdit(item);
+                                                        }}
+                                                        className={`w-full py-2 px-4 text-xs uppercase tracking-widest rounded-xl border bg-transparent outline-none transition-all ${editingItem ? 'bg-gold text-black border-gold font-bold' : 'border-white/10 text-white/40'}`}
+                                                        value={editingItem ? editingItem.id : ''}
+                                                    >
+                                                        <option value="" className="bg-zinc-900">Usar Existente...</option>
+                                                        {products
+                                                            .filter(p => 
+                                                                p.name.toLowerCase().includes(adminSearch.toLowerCase()) || 
+                                                                p.id.toLowerCase().includes(adminSearch.toLowerCase())
+                                                            )
+                                                            .map(p => <option key={p.id} value={p.id} className="bg-zinc-900">{p.name}</option>)
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div className="relative">
+                                                <Icon name="search" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20" />
+                                                <input 
+                                                    type="text" 
+                                                    placeholder="Pesquisar por nome ou código para editar..."
+                                                    value={adminSearch}
+                                                    onChange={(e) => setAdminSearch(e.target.value)}
+                                                    className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-xs outline-none focus:border-gold/50"
+                                                />
                                             </div>
                                         </div>
 
@@ -594,7 +633,10 @@
                                         <div key={item.id} className="flex items-center gap-4 bg-white/5 p-3 rounded-xl border border-white/5">
                                             <img src={item.images[0]} className="w-12 h-12 rounded-lg object-cover" />
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-medium truncate">{item.name}</p>
+                                                <div className="flex justify-between items-start">
+                                                    <p className="text-sm font-medium truncate">{item.name}</p>
+                                                    <span className="text-[10px] text-white/20 font-mono">#{item.id.slice(-8)}</span>
+                                                </div>
                                                 <div className="flex gap-3 text-xs text-white/40">
                                                     <span>R$ {item.price.toLocaleString()}</span>
                                                     <span className={item.stock > 0 ? 'text-emerald-500' : 'text-red-500'}>
@@ -1148,7 +1190,10 @@
                                                     </div>
                                                 </div>
                                                 <div className="text-center">
-                                                    <p className="text-[10px] uppercase tracking-[0.2em] text-gold mb-2">{item.category}</p>
+                                                    <div className="flex items-center justify-center gap-2 mb-2">
+                                                        <p className="text-[10px] uppercase tracking-[0.2em] text-gold">{item.category}</p>
+                                                        <span className="text-[9px] text-white/20 font-mono">#{item.id.slice(-6)}</span>
+                                                    </div>
                                                     <h4 className="text-lg font-serif mb-1 group-hover:text-gold transition-colors">{item.name}</h4>
                                                     <div className="flex flex-col gap-1">
                                                         <p className="text-white/40 text-sm">R$ {item.price.toLocaleString()}</p>
@@ -1219,7 +1264,10 @@
                                     </div>
 
                                     <div className="md:w-1/2 p-8 md:p-12 overflow-y-auto">
-                                        <p className="text-gold uppercase tracking-widest text-xs mb-4">{selectedItem.category}</p>
+                                        <div className="flex justify-between items-start mb-4">
+                                            <p className="text-gold uppercase tracking-widest text-xs">{selectedItem.category}</p>
+                                            <span className="text-sm text-white font-mono tracking-widest">CÓD: {selectedItem.id}</span>
+                                        </div>
                                         <h3 className="text-4xl font-serif mb-6">{selectedItem.name}</h3>
                                         <p className="text-2xl text-white/80 mb-8">R$ {selectedItem.price.toLocaleString()}</p>
                                         <p className="text-white/60 mb-8 leading-relaxed">{selectedItem.description}</p>
