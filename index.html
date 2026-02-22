@@ -782,14 +782,14 @@
                                                 setSelectedCategory(cat);
                                                 onClose();
                                             }}
-                                            className={`block w-full text-left text-lg uppercase tracking-[0.3em] transition-all ${selectedCategory === cat ? 'text-gold font-bold' : 'text-white/40'}`}
+                                            className={`block w-full text-left text-lg uppercase tracking-[0.3em] transition-all font-bold ${selectedCategory === cat ? 'text-gold' : 'text-white/40'}`}
                                         >
                                             {cat === 'Tudo' ? 'Início' : cat}
                                         </button>
                                     ))}
                                 </div>
                                 <div className="p-8 border-t border-white/10">
-                                    <p className="text-[10px] text-white/20 uppercase tracking-widest text-center">DRACMA Fine Jewelry</p>
+                                    <p className="text-[10px] text-white/20 uppercase tracking-widest text-center font-bold">DRACMA Fine Jewelry</p>
                                 </div>
                             </motion.div>
                         </div>
@@ -844,7 +844,7 @@
                                             <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6">
                                                 <Icon name="shopping-bag" size={32} className="text-white/20" />
                                             </div>
-                                            <p className="text-white/40 uppercase tracking-widest text-sm">Sua sacola está vazia</p>
+                                            <p className="text-white/40 uppercase tracking-widest text-sm font-bold">Sua sacola está vazia</p>
                                             <button 
                                                 onClick={onClose}
                                                 className="mt-8 text-gold text-xs font-bold uppercase tracking-[0.2em] border-b border-gold pb-1"
@@ -862,7 +862,7 @@
                                                     <div className="flex-1 min-w-0 flex flex-col justify-between py-1">
                                                         <div>
                                                             <div className="flex justify-between items-start gap-2">
-                                                                <h4 className="text-sm font-medium truncate">{item.name}</h4>
+                                                                <h4 className="text-sm font-bold truncate">{item.name}</h4>
                                                                 <button 
                                                                     onClick={() => removeFromCart(item.id)}
                                                                     className="text-white/20 hover:text-red-500 transition-colors"
@@ -870,7 +870,7 @@
                                                                     <Icon name="trash-2" size={14} />
                                                                 </button>
                                                             </div>
-                                                            <p className="text-xs text-white/40 mt-1">{item.category}</p>
+                                                            <p className="text-xs text-white/40 mt-1 font-bold">{item.category}</p>
                                                         </div>
                                                         <div className="flex justify-between items-center">
                                                             <div className="flex items-center gap-3 bg-white/5 rounded-lg px-2 py-1">
@@ -880,7 +880,7 @@
                                                                 >
                                                                     <Icon name="minus" size={12} />
                                                                 </button>
-                                                                <span className="text-xs font-medium w-4 text-center">{item.quantity}</span>
+                                                                <span className="text-xs font-bold w-4 text-center">{item.quantity}</span>
                                                                 <button 
                                                                     onClick={() => updateQuantity(item.id, 1)}
                                                                     className="text-white/40 hover:text-white transition-colors"
@@ -888,7 +888,7 @@
                                                                     <Icon name="plus" size={12} />
                                                                 </button>
                                                             </div>
-                                                            <p className="text-sm font-medium text-gold">R$ {(item.price * item.quantity).toLocaleString()}</p>
+                                                            <p className="text-sm font-bold text-gold">R$ {(item.price * item.quantity).toLocaleString()}</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -900,7 +900,7 @@
                                 {cart.length > 0 && (
                                     <div className="p-6 border-t border-white/10 bg-white/5">
                                         <div className="flex justify-between items-center mb-6">
-                                            <span className="text-white/40 uppercase tracking-widest text-xs">Subtotal</span>
+                                            <span className="text-white/40 uppercase tracking-widest text-xs font-bold">Subtotal</span>
                                             <span className="text-xl font-serif gold-gradient font-bold">R$ {total.toLocaleString()}</span>
                                         </div>
                                         <button 
@@ -909,7 +909,7 @@
                                         >
                                             Finalizar Compra
                                         </button>
-                                        <p className="text-[10px] text-center text-white/20 mt-4 uppercase tracking-widest">
+                                        <p className="text-[10px] text-center text-white/20 mt-4 uppercase tracking-widest font-bold">
                                             Frete grátis em todas as compras
                                         </p>
                                     </div>
@@ -923,6 +923,7 @@
 
         function App() {
             const [showCatalog, setShowCatalog] = useState(false);
+            const [catalogContentVisible, setCatalogContentVisible] = useState(false);
             const [products, setProducts] = useState(INITIAL_JEWELRY_DATA);
             const [isLoading, setIsLoading] = useState(true);
             const [selectedCategory, setSelectedCategory] = useState('Tudo');
@@ -951,9 +952,18 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 if (urlParams.get('admin') === 'true') {
                     setShowCatalog(true);
+                    setCatalogContentVisible(true);
                     setIsAdminPanelOpen(true);
                 }
             }, []);
+
+            const handleEnterCatalog = () => {
+                setShowCatalog(true);
+                setCatalogContentVisible(false);
+                setTimeout(() => {
+                    setCatalogContentVisible(true);
+                }, 1500);
+            };
 
             const addToCart = (product) => {
                 setCart(prev => {
@@ -1103,9 +1113,9 @@
                             >
                                 <div className="absolute inset-0 z-0">
                                     <img 
-                                        src="https://image2url.com/r2/default/images/1771628532250-e179a77b-b0e9-48c4-b064-909671e4b99e.png" 
+                                        src="https://image2url.com/r2/default/images/1771782515382-1c735931-052e-4405-a693-b468a57173f6.png" 
                                         alt="Landing Background" 
-                                        className="w-full h-full object-cover opacity-40"
+                                        className="w-full h-full object-cover opacity-50"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-b from-luxury-black/60 via-transparent to-luxury-black" />
                                 </div>
@@ -1120,7 +1130,7 @@
                                         <p className="text-white/40 uppercase tracking-[0.2em] text-sm mb-12">No more lost</p>
                                         
                                         <button 
-                                            onClick={() => setShowCatalog(true)}
+                                            onClick={handleEnterCatalog}
                                             className="group relative overflow-hidden bg-transparent border border-gold text-gold px-12 py-4 rounded-full font-medium tracking-widest hover:text-luxury-black transition-colors duration-500"
                                         >
                                             <span className="relative z-10">ACESSAR JÓIAS</span>
@@ -1135,24 +1145,33 @@
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.6 }}
-                                className="w-full relative min-h-screen"
+                                className="w-full relative min-h-screen text-luxury-black"
                             >
                                 {/* Fixed Background for Catalog */}
-                                <div className="fixed inset-0 z-0 pointer-events-none">
-                                    <img 
-                                        src="https://image2url.com/r2/default/images/1771631424239-3495b91c-70ef-46c3-8e9f-c8e08849ea07.png" 
+                                <div className="fixed inset-0 z-0 pointer-events-none bg-white">
+                                    <motion.img 
+                                        initial={{ opacity: 0.8 }}
+                                        animate={{ opacity: catalogContentVisible ? 0.15 : 0.8 }}
+                                        transition={{ duration: 1.2, ease: "easeInOut" }}
+                                        src="https://image2url.com/r2/default/images/1771782794123-9fdb5374-0972-482a-a11c-9cbb00ae5832.png" 
                                         alt="Catalog Background" 
-                                        className="w-full h-full object-cover opacity-30"
+                                        className="w-full h-full object-contain"
                                     />
-                                    <div className="absolute inset-0 bg-luxury-black/70" />
                                 </div>
 
-                                <div className="relative z-10">
-                                    {/* Navigation */}
-                                    <nav className="fixed top-0 w-full z-50 glass-card border-none bg-luxury-black/80">
+                                <AnimatePresence>
+                                    {catalogContentVisible && (
+                                        <motion.div 
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 1, ease: "easeOut" }}
+                                            className="relative z-10"
+                                        >
+                                            {/* Navigation */}
+                                            <nav className="fixed top-0 w-full z-50 glass-card border-none bg-white/80">
                                     <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                                         <div className="flex items-center gap-8">
-                                            <button className="lg:hidden text-white" onClick={() => setIsMenuOpen(true)}>
+                                            <button className="lg:hidden text-luxury-black" onClick={() => setIsMenuOpen(true)}>
                                                 <Icon name="menu" />
                                             </button>
                                             <div className="hidden lg:flex items-center gap-8">
@@ -1160,7 +1179,7 @@
                                                     <button
                                                         key={cat}
                                                         onClick={() => setSelectedCategory(cat)}
-                                                        className={`text-xs uppercase tracking-widest transition-all ${selectedCategory === cat ? 'text-gold border-b border-gold' : 'opacity-60 hover:opacity-100'}`}
+                                                        className={`text-xs uppercase tracking-widest transition-all font-bold ${selectedCategory === cat ? 'text-gold border-b border-gold' : 'text-luxury-black/60 hover:text-luxury-black'}`}
                                                     >
                                                         {cat === 'Tudo' ? 'Início' : cat}
                                                     </button>
@@ -1175,15 +1194,15 @@
                                                     placeholder="Buscar coleções..."
                                                     value={searchQuery}
                                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                                    className="bg-white/5 border border-white/10 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-gold/50 w-64 transition-all text-white"
+                                                    className="bg-black/5 border border-black/10 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-gold/50 w-64 transition-all text-luxury-black font-bold"
                                                 />
-                                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40">
+                                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-luxury-black/40">
                                                     <Icon name="search" size={16} />
                                                 </div>
                                             </div>
                                             <button 
                                                 onClick={() => setIsCartOpen(true)}
-                                                className="text-white/60 hover:text-gold transition-colors relative"
+                                                className="text-luxury-black/60 hover:text-gold transition-colors relative"
                                             >
                                                 <Icon name="shopping-bag" size={22} />
                                                 {cartCount > 0 && (
@@ -1219,8 +1238,8 @@
                                 {/* Catalog Grid */}
                                 <main className="max-w-7xl mx-auto px-6 pt-32 pb-24 w-full">
                                     <div className="mb-16">
-                                        <h3 className="text-4xl font-serif mb-4">A Coleção</h3>
-                                        <p className="text-white/40 max-w-md">Descubra nossa seleção curada de joias finas, cada peça contando uma história única de beleza e sofisticação.</p>
+                                        <h3 className="text-4xl font-serif mb-4 text-luxury-black font-bold">A Coleção</h3>
+                                        <p className="text-luxury-black/60 max-w-md font-bold">Descubra nossa seleção curada de joias finas, cada peça contando uma história única de beleza e sofisticação.</p>
                                     </div>
 
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -1232,7 +1251,7 @@
                                                 onClick={() => setSelectedItem(item)}
                                                 className="group cursor-pointer"
                                             >
-                                                <div className="relative aspect-[4/5] overflow-hidden rounded-2xl mb-6 bg-white/5">
+                                                <div className="relative aspect-[4/5] overflow-hidden rounded-2xl mb-6 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-black/5 group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-all duration-500">
                                                     <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                                     <div className="absolute bottom-6 left-1/2 -translate-x-1/2 translate-y-10 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
                                                         <button className="bg-gold text-luxury-black text-xs font-bold py-2 px-6 rounded-full">Ver Detalhes</button>
@@ -1240,12 +1259,12 @@
                                                 </div>
                                                 <div className="text-center">
                                                     <div className="flex items-center justify-center gap-2 mb-2">
-                                                        <p className="text-[10px] uppercase tracking-[0.2em] text-gold">{item.category}</p>
-                                                        <span className="text-[9px] text-white/20 font-mono">#{item.id.slice(-6)}</span>
+                                                        <p className="text-[10px] uppercase tracking-[0.2em] text-gold font-bold">{item.category}</p>
+                                                        <span className="text-[9px] text-luxury-black/20 font-mono font-bold">#{item.id.slice(-6)}</span>
                                                     </div>
-                                                    <h4 className="text-lg font-serif mb-1 group-hover:text-gold transition-colors">{item.name}</h4>
+                                                    <h4 className="text-lg font-serif mb-1 group-hover:text-gold transition-colors text-luxury-black font-bold">{item.name}</h4>
                                                     <div className="flex flex-col gap-1">
-                                                        <p className="text-white/40 text-sm">R$ {item.price.toLocaleString()}</p>
+                                                        <p className="text-luxury-black/60 text-sm font-bold">R$ {item.price.toLocaleString()}</p>
                                                         {item.stock <= 0 && (
                                                             <p className="text-red-500 text-[10px] uppercase tracking-widest font-bold">Esgotado</p>
                                                         )}
@@ -1257,20 +1276,22 @@
                                 </main>
 
                                 {/* Footer */}
-                                <footer className="bg-black border-t border-white/5 py-20">
+                                <footer className="bg-white border-t border-black/5 py-20">
                                     <div className="max-w-7xl mx-auto px-6 text-center">
                                         <h2 className="text-3xl font-serif gold-gradient font-bold mb-8">DRACMA</h2>
-                                        <p className="text-white/40 text-sm max-w-lg mx-auto mb-12">Criando momentos de brilho desde 1992. Nossa joalheria representa o auge do luxo e da expressão artística.</p>
+                                        <p className="text-luxury-black/60 text-sm max-w-lg mx-auto mb-12 font-bold">Criando momentos de brilho desde 1992. Nossa joalheria representa o auge do luxo e da expressão artística.</p>
                                         <div className="flex justify-center gap-8 mb-12">
-                                            <Icon name="instagram" className="text-white/20 hover:text-gold cursor-pointer" size={24} />
-                                            <Icon name="facebook" className="text-white/20 hover:text-gold cursor-pointer" size={24} />
-                                            <Icon name="twitter" className="text-white/20 hover:text-gold cursor-pointer" size={24} />
+                                            <Icon name="instagram" className="text-luxury-black/20 hover:text-gold cursor-pointer" size={24} />
+                                            <Icon name="facebook" className="text-luxury-black/20 hover:text-gold cursor-pointer" size={24} />
+                                            <Icon name="twitter" className="text-luxury-black/20 hover:text-gold cursor-pointer" size={24} />
                                         </div>
-                                        <p className="text-[10px] text-white/10 uppercase tracking-[0.3em]">© 2026 DRACMA Fine Jewelry. Todos os direitos reservados.</p>
+                                        <p className="text-[10px] text-luxury-black/20 uppercase tracking-[0.3em] font-bold">© 2026 DRACMA Fine Jewelry. Todos os direitos reservados.</p>
                                     </div>
                                 </footer>
-                            </div>
-                        </motion.div>
+                            </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </motion.div>
                         )}
                     </AnimatePresence>
 
