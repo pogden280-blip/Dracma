@@ -684,19 +684,36 @@
             );
         };
 
-        const AssetViewer = ({ item }) => {
+         const AssetViewer = ({ item }) => {
             const [currentIndex, setCurrentIndex] = useState(0);
+            const [isZoomed, setIsZoomed] = useState(false);
+            const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
             const assets = [...item.images, ...(item.video ? [item.video] : [])];
 
+            const handleMouseMove = (e) => {
+                const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+                const x = ((e.clientX - left) / width) * 100;
+                const y = ((e.clientY - top) / height) * 100;
+                setMousePos({ x, y });
+            };
+
             return (
-                <div className="relative w-full h-full group">
+                <div className="relative w-full h-full group overflow-hidden cursor-zoom-in">
                     <div className="w-full h-full">
                         {currentIndex < item.images.length ? (
-                            <img 
-                                src={assets[currentIndex]} 
-                                className="w-full h-full object-cover" 
-                                alt={item.name}
-                            />
+                            <div 
+                                className="w-full h-full overflow-hidden"
+                                onMouseMove={handleMouseMove}
+                                onMouseEnter={() => setIsZoomed(true)}
+                                onMouseLeave={() => setIsZoomed(false)}
+                            >
+                                <img 
+                                    src={assets[currentIndex]} 
+                                    className={`w-full h-full object-cover transition-transform duration-200 ${isZoomed ? 'scale-[2.5]' : 'scale-100'}`} 
+                                    style={isZoomed ? { transformOrigin: `${mousePos.x}% ${mousePos.y}%` } : {}}
+                                    alt={item.name}
+                                />
+                            </div>
                         ) : (
                             <video 
                                 src={assets[currentIndex]} 
@@ -708,6 +725,13 @@
                             />
                         )}
                     </div>
+
+                    {/* Zoom Indicator */}
+                    {currentIndex < item.images.length && !isZoomed && (
+                        <div className="absolute top-4 right-4 p-2 rounded-full bg-black/20 backdrop-blur-md text-white/60 pointer-events-none transition-opacity group-hover:opacity-100 opacity-0">
+                            <Icon name="maximize" size={16} />
+                        </div>
+                    )}
 
                     {assets.length > 1 && (
                         <>
@@ -1330,6 +1354,9 @@
                                     <div className="md:w-1/2 h-80 md:h-auto bg-black flex flex-col">
                                         <div className="flex-1 relative overflow-hidden">
                                             <AssetViewer item={selectedItem} />
+                                            <div className="absolute bottom-4 left-4 pointer-events-none">
+                                                <p className="text-[9px] uppercase tracking-widest text-white/30 font-bold">Passe o mouse para zoom</p>
+                                            </div>
                                         </div>
                                     </div>
 
