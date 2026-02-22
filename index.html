@@ -749,6 +749,55 @@
             );
         };
 
+        const MobileMenu = ({ isOpen, onClose, categories, selectedCategory, setSelectedCategory }) => {
+            return (
+                <AnimatePresence>
+                    {isOpen && (
+                        <div className="fixed inset-0 z-[600] lg:hidden">
+                            <motion.div 
+                                initial={{ opacity: 0 }} 
+                                animate={{ opacity: 1 }} 
+                                exit={{ opacity: 0 }} 
+                                onClick={onClose} 
+                                className="absolute inset-0 bg-black/80 backdrop-blur-md" 
+                            />
+                            <motion.div 
+                                initial={{ x: '-100%' }} 
+                                animate={{ x: 0 }} 
+                                exit={{ x: '-100%' }} 
+                                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                                className="relative w-4/5 max-w-sm bg-luxury-black h-full flex flex-col border-r border-white/10"
+                            >
+                                <div className="p-8 border-b border-white/10 flex justify-between items-center">
+                                    <h3 className="text-xl font-serif gold-gradient font-bold tracking-widest">CATEGORIAS</h3>
+                                    <button onClick={onClose} className="text-white/40 hover:text-white transition-colors">
+                                        <Icon name="x" size={24} />
+                                    </button>
+                                </div>
+                                <div className="flex-1 overflow-y-auto p-8 space-y-8">
+                                    {categories.map(cat => (
+                                        <button
+                                            key={cat}
+                                            onClick={() => {
+                                                setSelectedCategory(cat);
+                                                onClose();
+                                            }}
+                                            className={`block w-full text-left text-lg uppercase tracking-[0.3em] transition-all ${selectedCategory === cat ? 'text-gold font-bold' : 'text-white/40'}`}
+                                        >
+                                            {cat === 'Tudo' ? 'Início' : cat}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="p-8 border-t border-white/10">
+                                    <p className="text-[10px] text-white/20 uppercase tracking-widest text-center">Aura Maidan Fine Jewelry</p>
+                                </div>
+                            </motion.div>
+                        </div>
+                    )}
+                </AnimatePresence>
+            );
+        };
+
         const CartDrawer = ({ isOpen, onClose, cart, removeFromCart, updateQuantity, total, onCheckout }) => {
             return (
                 <AnimatePresence>
@@ -1302,6 +1351,15 @@
                             </div>
                         )}
                     </AnimatePresence>
+
+                    {/* Mobile Menu */}
+                    <MobileMenu 
+                        isOpen={isMenuOpen} 
+                        onClose={() => setIsMenuOpen(false)} 
+                        categories={categories}
+                        selectedCategory={selectedCategory}
+                        setSelectedCategory={setSelectedCategory}
+                    />
 
                     {/* Cart Drawer */}
                     <CartDrawer 
