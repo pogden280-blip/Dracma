@@ -697,8 +697,29 @@
                 setMousePos({ x, y });
             };
 
+            const handleTouchMove = (e) => {
+                if (!isZoomed) return;
+                const touch = e.touches[0];
+                const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+                const x = ((touch.clientX - left) / width) * 100;
+                const y = ((touch.clientY - top) / height) * 100;
+                setMousePos({ x, y });
+            };
+
+            const handleTouchStart = (e) => {
+                // Toggle zoom on tap for mobile
+                setIsZoomed(!isZoomed);
+                if (!isZoomed) {
+                    const touch = e.touches[0];
+                    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+                    const x = ((touch.clientX - left) / width) * 100;
+                    const y = ((touch.clientY - top) / height) * 100;
+                    setMousePos({ x, y });
+                }
+            };
+
             return (
-                <div className="relative w-full h-full group overflow-hidden cursor-zoom-in">
+                <div className="relative w-full h-full group overflow-hidden cursor-zoom-in touch-none">
                     <div className="w-full h-full">
                         {currentIndex < item.images.length ? (
                             <div 
@@ -706,6 +727,8 @@
                                 onMouseMove={handleMouseMove}
                                 onMouseEnter={() => setIsZoomed(true)}
                                 onMouseLeave={() => setIsZoomed(false)}
+                                onTouchStart={handleTouchStart}
+                                onTouchMove={handleTouchMove}
                             >
                                 <img 
                                     src={assets[currentIndex]} 
@@ -1355,7 +1378,8 @@
                                         <div className="flex-1 relative overflow-hidden">
                                             <AssetViewer item={selectedItem} />
                                             <div className="absolute bottom-4 left-4 pointer-events-none">
-                                                <p className="text-[9px] uppercase tracking-widest text-white/30 font-bold">Passe o mouse para zoom</p>
+                                                <p className="text-[9px] uppercase tracking-widest text-white/30 font-bold hidden md:block">Passe o mouse para zoom</p>
+                                                <p className="text-[9px] uppercase tracking-widest text-white/30 font-bold md:hidden">Toque para zoom e arraste</p>
                                             </div>
                                         </div>
                                     </div>
